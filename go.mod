@@ -1,15 +1,18 @@
 module github.com/buildbarn/bb-browser
 
-go 1.26.1
+go 1.26.2
 
 // Newer versions aren't part of Bazel Central Registry.
 replace github.com/envoyproxy/protoc-gen-validate => github.com/envoyproxy/protoc-gen-validate v1.3.0
+
+// Use the local fork for the cgroup-related protos (CGroupResourceUsage).
+replace github.com/buildbarn/bb-remote-execution => ../bb-remote-execution
 
 require (
 	github.com/bazelbuild/buildtools v0.0.0-20260319080235-05d2ebe49b0f
 	github.com/bazelbuild/remote-apis v0.0.0-20260216160025-715b73f3f9e4
 	github.com/buildbarn/bb-remote-execution v0.0.0-20260319042723-cd89f0554d18
-	github.com/buildbarn/bb-storage v0.0.0-20260317135248-dc342e1799d7
+	github.com/buildbarn/bb-storage v0.0.0-20260507124548-e5d91cab6de6
 	github.com/buildkite/terminal-to-html v3.2.0+incompatible
 	github.com/dustin/go-humanize v1.0.1
 	github.com/gorilla/mux v1.8.1

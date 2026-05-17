@@ -11,6 +11,7 @@ bazel_dep(name = "gazelle", version = "0.47.0")
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "protobuf", version = "33.5")
 bazel_dep(name = "rules_go", version = "0.59.0")
+bazel_dep(name = "rules_img", version = "0.3.4")
 bazel_dep(name = "rules_jsonnet", version = "0.7.2")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 bazel_dep(name = "toolchains_llvm", version = "1.6.0")
@@ -21,10 +22,9 @@ git_override(
     remote = "https://github.com/bazelbuild/remote-apis.git",
 )
 
-git_override(
+local_path_override(
     module_name = "com_github_buildbarn_bb_remote_execution",
-    commit = "cd89f0554d18a1e8a0f3f4e3155b273fb2d3fff7",
-    remote = "https://github.com/buildbarn/bb-remote-execution.git",
+    path = "../bb-remote-execution",
 )
 
 git_override(

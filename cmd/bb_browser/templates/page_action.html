@@ -402,6 +402,65 @@ The input root of this action could not be found.
 				{{end}}
 			</table>
 		{{end}}
+
+		{{with to_cgroup_resource_usage .}}
+			<h3 class="my-4">CGroup resource usage</h3>
+			<table class="table" style="table-layout: fixed">
+				{{if or .RequestedCpuMax .RequestedMemoryMax}}
+					<tr>
+						<th style="width: 25%">Applied limits:</th>
+						<td style="width: 75%">
+							{{with .RequestedCpuMax}}<code>cpu.max = {{.}}</code>{{end}}
+							{{if and .RequestedCpuMax .RequestedMemoryMax}} &nbsp;|&nbsp; {{end}}
+							{{with .RequestedMemoryMax}}<code>memory.max = {{humanize_bytes .}}</code>{{end}}
+						</td>
+					</tr>
+				{{end}}
+				{{if .GpuUuids}}
+					<tr>
+						<th style="width: 25%">Assigned GPUs:</th>
+						<td style="width: 75%">
+							{{range .GpuUuids}}<code>{{.}}</code><br>{{end}}
+						</td>
+					</tr>
+				{{end}}
+				<tr>
+					<th style="width: 25%">CPU time:</th>
+					<td style="width: 75%">
+						{{cgroup_cpu_seconds .CpuUserUsec}}s user,
+						{{cgroup_cpu_seconds .CpuSystemUsec}}s system
+						(total {{cgroup_cpu_seconds .CpuUsageUsec}}s)
+					</td>
+				</tr>
+				{{if .NrPeriods}}
+					<tr>
+						<th style="width: 25%">CPU throttling:</th>
+						<td style="width: 75%">
+							{{.NrThrottled}} / {{.NrPeriods}} 100ms periods throttled
+							({{cgroup_cpu_seconds .ThrottledUsec}}s of wall time spent off-CPU)
+						</td>
+					</tr>
+				{{end}}
+				{{if .PeakMemoryBytes}}
+					<tr>
+						<th style="width: 25%">Peak memory:</th>
+						<td style="width: 75%">{{humanize_bytes .PeakMemoryBytes}}</td>
+					</tr>
+				{{end}}
+				{{if .CurrentMemoryBytes}}
+					<tr>
+						<th style="width: 25%">Memory at exit:</th>
+						<td style="width: 75%">{{humanize_bytes .CurrentMemoryBytes}}</td>
+					</tr>
+				{{end}}
+				{{if .OomKillCount}}
+					<tr class="table-danger">
+						<th style="width: 25%">OOM kills:</th>
+						<td style="width: 75%"><strong>{{.OomKillCount}}</strong> (one or more processes were killed for exceeding memory.max)</td>
+					</tr>
+				{{end}}
+			</table>
+		{{end}}
 	{{end}}
 {{end}}
 

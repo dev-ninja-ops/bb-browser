@@ -5,6 +5,7 @@ import (
 	"embed"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"os"
 	"path"
@@ -162,6 +163,9 @@ func main() {
 			"inc": func(n int) int {
 				return n + 1
 			},
+			"cgroup_cpu_seconds": func(usec uint64) string {
+				return fmt.Sprintf("%.2f", float64(usec)/1e6)
+			},
 			"proto_to_json": protojson.MarshalOptions{}.Format,
 			"request_metadata_links": func(requestMetadata *remoteexecution.RequestMetadata) (map[string]string, error) {
 				marshaledRequestMetadata, err := protojson.Marshal(requestMetadata)
@@ -239,6 +243,13 @@ func main() {
 			},
 			"to_posix_resource_usage": func(any *anypb.Any) *resourceusage.POSIXResourceUsage {
 				var pb resourceusage.POSIXResourceUsage
+				if any.UnmarshalTo(&pb) != nil {
+					return nil
+				}
+				return &pb
+			},
+			"to_cgroup_resource_usage": func(any *anypb.Any) *resourceusage.CGroupResourceUsage {
+				var pb resourceusage.CGroupResourceUsage
 				if any.UnmarshalTo(&pb) != nil {
 					return nil
 				}

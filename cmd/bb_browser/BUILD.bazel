@@ -3,6 +3,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 load("@com_github_buildbarn_bb_browser_npm//:purgecss/package_json.bzl", purgecss_bin = "bin")
 load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_img//img:load.bzl", "image_load")
 
 go_library(
     name = "bb_browser_lib",
@@ -148,4 +149,11 @@ container_push_official(
     name = "bb_browser_container_push",
     component = "bb-browser",
     image = ":bb_browser_container",
+)
+
+image_load(
+    name = "bb_browser_container_load",
+    image = ":_bb_browser_container.image",
+    tag = "bb-browser:cgroup-dev",
+    tags = ["manual"],
 )
