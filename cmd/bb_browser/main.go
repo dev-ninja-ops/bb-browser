@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -165,6 +166,29 @@ func main() {
 			},
 			"cgroup_cpu_seconds": func(usec uint64) string {
 				return fmt.Sprintf("%.2f", float64(usec)/1e6)
+			},
+			"cgroup_cpu_cores": func(cpuMax string) string {
+				cpuMax = strings.TrimSpace(cpuMax)
+				if cpuMax == "" {
+					return "?"
+				}
+				parts := strings.Fields(cpuMax)
+				if len(parts) != 2 {
+					return "?"
+				}
+				if parts[0] == "max" {
+					return "unlimited"
+				}
+				quota, err1 := strconv.ParseInt(parts[0], 10, 64)
+				period, err2 := strconv.ParseUint(parts[1], 10, 64)
+				if err1 != nil || err2 != nil || period == 0 {
+					return "?"
+				}
+				cores := float64(quota) / float64(period)
+				if cores == float64(int64(cores)) {
+					return fmt.Sprintf("%d cores", int64(cores))
+				}
+				return fmt.Sprintf("%.2f cores", cores)
 			},
 			"proto_to_json": protojson.MarshalOptions{}.Format,
 			"request_metadata_links": func(requestMetadata *remoteexecution.RequestMetadata) (map[string]string, error) {

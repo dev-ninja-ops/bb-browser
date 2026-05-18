@@ -410,9 +410,9 @@ The input root of this action could not be found.
 					<tr>
 						<th style="width: 25%">Applied limits:</th>
 						<td style="width: 75%">
-							{{with .RequestedCpuMax}}<code>cpu.max = {{.}}</code>{{end}}
-							{{if and .RequestedCpuMax .RequestedMemoryMax}} &nbsp;|&nbsp; {{end}}
-							{{with .RequestedMemoryMax}}<code>memory.max = {{humanize_bytes .}}</code>{{end}}
+							{{with .RequestedCpuMax}}<strong>{{cgroup_cpu_cores .}}</strong> <span class="text-muted">(cpu.max = <code>{{.}}</code>)</span>{{end}}
+							{{if and .RequestedCpuMax .RequestedMemoryMax}}<br>{{end}}
+							{{with .RequestedMemoryMax}}<strong>{{humanize_bytes .}}</strong> <span class="text-muted">memory</span>{{end}}
 						</td>
 					</tr>
 				{{end}}
